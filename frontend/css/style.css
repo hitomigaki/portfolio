@@ -5,28 +5,30 @@
   - 色はCSS変数にまとめ、状態色(ready/not-ready, hit/blowなど)を
     意味ごとに固定する。
   - 「コードレース」というゲーム名にちなみ、暗号解読/ターミナルを
-    イメージしたダーク×アンバー配色にしている。数字が並ぶ場所
-    (ルームコード・予想入力・回答履歴)は等幅フォントで統一し、
-    「コードを読み解いている」感覚を出す。
+    イメージした配色にしている。数字が並ぶ場所(ルームコード・予想入力・
+    回答履歴)は等幅フォントで統一し、「コードを読み解いている」感覚を出す。
+  - 色調は「漆黒のターミナル」ではなく、少し明るめのダークネイビーを
+    基調にして圧迫感を抑えつつ、見出しのマーカー・入力欄のグロー・
+    ボタンの押下感など細部の質感を作り込んでいる。
 */
 
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 :root {
-  --color-bg: #12141c;
-  --color-surface: #1a1d29;
-  --color-surface-alt: #20242f;
-  --color-border: #2b3040;
-  --color-text: #e7e9f0;
-  --color-text-muted: #8b93a8;
+  --color-bg: #1c2030;
+  --color-surface: #262b3d;
+  --color-surface-sunken: #171a26;
+  --color-border: #3a4159;
+  --color-text: #eef0f7;
+  --color-text-muted: #9aa2ba;
   --color-primary: #f2b705;
-  --color-primary-hover: #ffcf40;
-  --color-primary-ink: #14161f;
+  --color-primary-hover: #ffce3d;
+  --color-primary-ink: #171512;
   --color-danger: #f87171;
   --color-success: #34d399;
   --color-cpu: #38bdf8;
   --radius: 10px;
-  --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
   --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
 }
 
@@ -42,6 +44,24 @@ body {
   color: var(--color-text);
   font-family: "Hiragino Sans", "Yu Gothic", "Segoe UI", system-ui, sans-serif;
   line-height: 1.6;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
 }
 
 .page {
@@ -63,6 +83,24 @@ header.app-header h1 {
   color: var(--color-primary);
 }
 
+header.app-header .cursor {
+  display: inline-block;
+  color: var(--color-primary);
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  header.app-header .cursor {
+    animation: none;
+  }
+}
+
 header.app-header p {
   margin: 4px 0 0;
   color: var(--color-text-muted);
@@ -80,8 +118,20 @@ header.app-header p {
 
 .card h2 {
   margin: 0 0 14px;
-  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
   color: var(--color-text);
+}
+
+.card h2::before {
+  content: "\25B8";
+  color: var(--color-primary);
+  font-size: 0.85em;
 }
 
 .field {
@@ -103,14 +153,15 @@ header.app-header p {
   border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 1rem;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-sunken);
   color: var(--color-text);
 }
 
 .field input:focus,
 .field select:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(242, 183, 5, 0.22);
 }
 
 .radio-group,
@@ -127,11 +178,19 @@ header.app-header p {
   gap: 6px;
   font-size: 0.9rem;
   color: var(--color-text);
-  background: var(--color-surface-alt);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-border);
   border-radius: 20px;
   padding: 6px 12px;
   cursor: pointer;
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+
+.radio-group label:has(input:checked),
+.checkbox-row label:has(input:checked) {
+  border-color: var(--color-primary);
+  background: rgba(242, 183, 5, 0.1);
+  color: var(--color-primary);
 }
 
 button,
@@ -149,32 +208,44 @@ button,
   background: var(--color-primary);
   color: var(--color-primary-ink);
   width: 100%;
-  transition: background 0.15s ease;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.28);
+  transition: background 0.12s ease, transform 0.08s ease, box-shadow 0.08s ease;
 }
 
 button:hover:not(:disabled) {
   background: var(--color-primary-hover);
 }
 
+button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.28);
+}
+
 button:disabled {
-  background: #363b4a;
+  background: #3a3f52;
   color: var(--color-text-muted);
+  box-shadow: none;
   cursor: not-allowed;
 }
 
 button.secondary {
-  background: var(--color-surface);
+  background: var(--color-surface-sunken);
   color: var(--color-primary);
   border: 1px solid var(--color-primary);
+  box-shadow: none;
 }
 
 button.secondary:hover:not(:disabled) {
   background: rgba(242, 183, 5, 0.1);
 }
 
+button.secondary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
 button.danger {
   background: var(--color-danger);
-  color: #1a1114;
+  color: #24080a;
 }
 
 .btn-row {
@@ -205,16 +276,25 @@ button.danger {
 }
 
 .room-code-banner .code {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-mono);
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.15em;
   color: var(--color-primary);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 8px 14px;
+  text-shadow: 0 0 14px rgba(242, 183, 5, 0.35);
 }
 
 .room-code-banner .code::before {
-  content: "> ";
+  content: ">";
   color: var(--color-text-muted);
+  text-shadow: none;
 }
 
 #qr-container {
@@ -247,7 +327,7 @@ button.danger {
   padding: 10px 12px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-sunken);
 }
 
 .player-row .name {
@@ -259,9 +339,10 @@ button.danger {
 
 .badge {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  padding: 3px 8px;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
   border-radius: 999px;
   white-space: nowrap;
 }
@@ -287,7 +368,7 @@ button.danger {
 }
 
 .badge.offline {
-  background: rgba(139, 147, 168, 0.15);
+  background: rgba(154, 162, 186, 0.15);
   color: var(--color-text-muted);
 }
 
@@ -320,7 +401,7 @@ button.danger {
   justify-content: center;
   gap: 14px;
   flex-wrap: wrap;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-sunken);
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 14px;
@@ -358,15 +439,17 @@ button.danger {
   text-align: center;
   font-family: var(--font-mono);
   font-size: 1.4rem;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-sunken);
   color: var(--color-text);
   border: 2px solid var(--color-border);
   border-radius: 6px;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
 }
 
 .digit-inputs input:focus {
   border-color: var(--color-primary);
   outline: none;
+  box-shadow: 0 0 0 4px rgba(242, 183, 5, 0.22);
 }
 
 .status-bar {
@@ -376,7 +459,10 @@ button.danger {
   flex-wrap: wrap;
   font-size: 0.85rem;
   color: var(--color-text-muted);
-  margin-bottom: 10px;
+  padding: 8px 2px;
+  margin-bottom: 12px;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .status-bar strong {
@@ -403,7 +489,7 @@ button.danger {
 
 .history-player .history-player-head {
   padding: 8px 12px;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-sunken);
   font-weight: 700;
   display: flex;
   justify-content: space-between;
@@ -443,9 +529,13 @@ button.danger {
 }
 
 .ranking-table tr.rank-1 td {
-  background: rgba(242, 183, 5, 0.12);
+  background: rgba(242, 183, 5, 0.1);
   color: var(--color-primary);
   font-weight: 700;
+}
+
+.ranking-table tr.rank-1 td:first-child {
+  border-left: 3px solid var(--color-primary);
 }
 
 .secret-reveal {
@@ -455,6 +545,7 @@ button.danger {
   font-weight: 700;
   letter-spacing: 0.2em;
   color: var(--color-primary);
+  text-shadow: 0 0 16px rgba(242, 183, 5, 0.35);
   margin: 10px 0;
 }
 
@@ -464,7 +555,7 @@ button.danger {
   bottom: 20px;
   transform: translateX(-50%);
   background: var(--color-danger);
-  color: #1a1114;
+  color: #24080a;
   padding: 12px 18px;
   border-radius: 6px;
   box-shadow: var(--shadow);
