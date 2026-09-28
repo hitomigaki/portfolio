@@ -4,21 +4,30 @@
     複数列に広げる(モバイルファースト)。
   - 色はCSS変数にまとめ、状態色(ready/not-ready, hit/blowなど)を
     意味ごとに固定する。
+  - 「コードレース」というゲーム名にちなみ、暗号解読/ターミナルを
+    イメージしたダーク×アンバー配色にしている。数字が並ぶ場所
+    (ルームコード・予想入力・回答履歴)は等幅フォントで統一し、
+    「コードを読み解いている」感覚を出す。
 */
 
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
+
 :root {
-  --color-bg: #f4f6fb;
-  --color-surface: #ffffff;
-  --color-border: #dde3ee;
-  --color-text: #1f2533;
-  --color-text-muted: #6b7280;
-  --color-primary: #3457d5;
-  --color-primary-dark: #2542a8;
-  --color-danger: #d64545;
-  --color-success: #2a9d5c;
-  --color-warning: #c98a1f;
-  --radius: 12px;
-  --shadow: 0 2px 10px rgba(31, 37, 51, 0.08);
+  --color-bg: #12141c;
+  --color-surface: #1a1d29;
+  --color-surface-alt: #20242f;
+  --color-border: #2b3040;
+  --color-text: #e7e9f0;
+  --color-text-muted: #8b93a8;
+  --color-primary: #f2b705;
+  --color-primary-hover: #ffcf40;
+  --color-primary-ink: #14161f;
+  --color-danger: #f87171;
+  --color-success: #34d399;
+  --color-cpu: #38bdf8;
+  --radius: 10px;
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
 }
 
 * {
@@ -48,8 +57,10 @@ header.app-header {
 
 header.app-header h1 {
   margin: 0;
+  font-family: var(--font-mono);
   font-size: 1.5rem;
-  color: var(--color-primary-dark);
+  letter-spacing: 0.02em;
+  color: var(--color-primary);
 }
 
 header.app-header p {
@@ -90,9 +101,9 @@ header.app-header p {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 1rem;
-  background: var(--color-surface);
+  background: var(--color-surface-alt);
   color: var(--color-text);
 }
 
@@ -116,7 +127,7 @@ header.app-header p {
   gap: 6px;
   font-size: 0.9rem;
   color: var(--color-text);
-  background: var(--color-bg);
+  background: var(--color-surface-alt);
   border: 1px solid var(--color-border);
   border-radius: 20px;
   padding: 6px 12px;
@@ -130,38 +141,40 @@ button,
   justify-content: center;
   gap: 6px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 12px 18px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-primary-ink);
   width: 100%;
   transition: background 0.15s ease;
 }
 
 button:hover:not(:disabled) {
-  background: var(--color-primary-dark);
+  background: var(--color-primary-hover);
 }
 
 button:disabled {
-  background: #b7bfd6;
+  background: #363b4a;
+  color: var(--color-text-muted);
   cursor: not-allowed;
 }
 
 button.secondary {
   background: var(--color-surface);
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   border: 1px solid var(--color-primary);
 }
 
 button.secondary:hover:not(:disabled) {
-  background: #eef1fc;
+  background: rgba(242, 183, 5, 0.1);
 }
 
 button.danger {
   background: var(--color-danger);
+  color: #1a1114;
 }
 
 .btn-row {
@@ -192,16 +205,24 @@ button.danger {
 }
 
 .room-code-banner .code {
+  font-family: var(--font-mono);
   font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: 0.15em;
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
+}
+
+.room-code-banner .code::before {
+  content: "> ";
+  color: var(--color-text-muted);
 }
 
 #qr-container {
   display: flex;
   justify-content: center;
-  padding: 12px 0;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: var(--radius);
 }
 
 #qr-container svg {
@@ -225,8 +246,8 @@ button.danger {
   gap: 8px;
   padding: 10px 12px;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-bg);
+  border-radius: 6px;
+  background: var(--color-surface-alt);
 }
 
 .player-row .name {
@@ -246,38 +267,38 @@ button.danger {
 }
 
 .badge.ready {
-  background: #e3f6ea;
+  background: rgba(52, 211, 153, 0.15);
   color: var(--color-success);
 }
 
 .badge.not-ready {
-  background: #fdeceb;
+  background: rgba(248, 113, 113, 0.15);
   color: var(--color-danger);
 }
 
 .badge.cpu {
-  background: #eef1fc;
-  color: var(--color-primary-dark);
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--color-cpu);
 }
 
 .badge.host {
-  background: #fff3d9;
-  color: var(--color-warning);
+  background: rgba(242, 183, 5, 0.18);
+  color: var(--color-primary);
 }
 
 .badge.offline {
-  background: #eceff3;
+  background: rgba(139, 147, 168, 0.15);
   color: var(--color-text-muted);
 }
 
 .badge.hit {
-  background: #e3f6ea;
+  background: rgba(52, 211, 153, 0.15);
   color: var(--color-success);
 }
 
 .badge.blow {
-  background: #fff3d9;
-  color: var(--color-warning);
+  background: rgba(242, 183, 5, 0.18);
+  color: var(--color-primary);
 }
 
 .how-to-play ol {
@@ -299,15 +320,16 @@ button.danger {
   justify-content: center;
   gap: 14px;
   flex-wrap: wrap;
-  background: var(--color-bg);
+  background: var(--color-surface-alt);
   border: 1px solid var(--color-border);
   border-radius: 10px;
   padding: 14px;
 }
 
 .example-guess {
+  font-family: var(--font-mono);
   font-size: 1.3rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.15em;
   font-variant-numeric: tabular-nums;
   color: var(--color-text);
@@ -334,9 +356,12 @@ button.danger {
   width: 44px;
   height: 52px;
   text-align: center;
+  font-family: var(--font-mono);
   font-size: 1.4rem;
+  background: var(--color-surface-alt);
+  color: var(--color-text);
   border: 2px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .digit-inputs input:focus {
@@ -355,6 +380,7 @@ button.danger {
 }
 
 .status-bar strong {
+  font-family: var(--font-mono);
   color: var(--color-text);
 }
 
@@ -377,7 +403,7 @@ button.danger {
 
 .history-player .history-player-head {
   padding: 8px 12px;
-  background: var(--color-bg);
+  background: var(--color-surface-alt);
   font-weight: 700;
   display: flex;
   justify-content: space-between;
@@ -398,6 +424,7 @@ button.danger {
 }
 
 .history-player .numbers {
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.1em;
   font-weight: 700;
@@ -416,16 +443,18 @@ button.danger {
 }
 
 .ranking-table tr.rank-1 td {
-  background: #fff8e6;
+  background: rgba(242, 183, 5, 0.12);
+  color: var(--color-primary);
   font-weight: 700;
 }
 
 .secret-reveal {
   text-align: center;
+  font-family: var(--font-mono);
   font-size: 1.6rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.2em;
-  color: var(--color-primary-dark);
+  color: var(--color-primary);
   margin: 10px 0;
 }
 
@@ -435,9 +464,9 @@ button.danger {
   bottom: 20px;
   transform: translateX(-50%);
   background: var(--color-danger);
-  color: #fff;
+  color: #1a1114;
   padding: 12px 18px;
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow: var(--shadow);
   max-width: 90vw;
   z-index: 1000;
