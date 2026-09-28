@@ -1,0 +1,10 @@
+# 単体のdocker runと等価だが、ポート番号などの起動設定を1ファイルに
+# まとめておくと再現しやすいため用意している。
+#
+#   docker compose up --build
+#
+services:
+  code-race:
+    build: .
+    ports:
+      - "8000:8000"

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>コードレース - 数字当て対戦ゲーム</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="app-header">
+      <h1>コードレース</h1>
+      <p>ヒット&ブロー形式の数字当てをみんなでリアルタイム対戦</p>
+    </header>
+
+    <section class="card how-to-play">
+      <h2>遊び方</h2>
+      <ol>
+        <li>サーバーが「秘密の数字」を決めます(自分にも相手にも見えません)。</li>
+        <li>
+          桁数ぶんの数字を予想して送信すると、
+          <strong>ヒット</strong>(数字も位置も合っている数)と
+          <strong>ブロー</strong>(数字は合っているが位置が違う数)が返ってきます。
+        </li>
+        <li>ヒントを手がかりに候補を絞り込み、全桁ヒットしたら正解です。</li>
+        <li>
+          <strong>みんなで対戦</strong>は同じ問題を全員で解き、少ない回数・短い時間で
+          正解した人が優勝。<strong>ひとりで遊ぶ</strong>はCPUを相手に練習できます。
+        </li>
+      </ol>
+
+      <p class="muted" style="margin-bottom: 8px">例: 秘密の数字が 1234 のとき…</p>
+      <div class="example-board">
+        <span class="example-guess">1435</span>
+        <span class="example-arrow">→</span>
+        <div class="example-hints">
+          <span class="badge hit">ヒット 2</span>
+          <span class="badge blow">ブロー 1</span>
+        </div>
+      </div>
+    </section>
+
+    <form id="form-play" class="card" autocomplete="off">
+      <h2>対戦を始める</h2>
+
+      <div class="field">
+        <label for="input-name">なまえ</label>
+        <input type="text" id="input-name" maxlength="20" required placeholder="例: たろう" />
+      </div>
+
+      <div class="field">
+        <label>桁数</label>
+        <div class="radio-group" id="group-digits">
+          <label><input type="radio" name="digits" value="3" /> 3桁</label>
+          <label><input type="radio" name="digits" value="4" checked /> 4桁</label>
+          <label><input type="radio" name="digits" value="5" /> 5桁</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="checkbox-row">
+          <label><input type="checkbox" id="input-allow-duplicate" /> 数字の重複を許可する</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="input-max-attempts">回数制限</label>
+        <input type="number" id="input-max-attempts" min="1" max="50" value="10" />
+      </div>
+
+      <div class="field">
+        <label for="input-time-limit">制限時間</label>
+        <select id="input-time-limit">
+          <option value="0">なし</option>
+          <option value="60">1分</option>
+          <option value="180">3分</option>
+          <option value="300" selected>5分</option>
+          <option value="600">10分</option>
+        </select>
+      </div>
+
+      <div class="btn-row">
+        <button type="submit" id="btn-create-room">みんなで対戦(ルームを作る)</button>
+        <button type="button" id="btn-solo" class="secondary">ひとりで遊ぶ(CPU相手に練習)</button>
+      </div>
+    </form>
+
+    <form id="form-join" class="card" autocomplete="off">
+      <h2>ルームに参加する</h2>
+      <div class="field">
+        <label for="join-code">ルームコード</label>
+        <input
+          type="text"
+          id="join-code"
+          maxlength="6"
+          required
+          placeholder="例: 4F7K9C"
+          style="text-transform: uppercase; letter-spacing: 0.2em"
+        />
+      </div>
+      <div class="field">
+        <label for="join-name">なまえ</label>
+        <input type="text" id="join-name" maxlength="20" required placeholder="例: はなこ" />
+      </div>
+      <div class="btn-row">
+        <button type="submit">参加する</button>
+      </div>
+    </form>
+  </div>
+
+  <script type="module" src="/js/top.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>コードレース - ルーム</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="app-header">
+      <h1>コードレース</h1>
+    </header>
+
+    <section id="screen-loading" class="card">
+      <p class="muted">読み込み中…</p>
+    </section>
+
+    <section id="screen-join-error" class="card hidden">
+      <h2>参加できません</h2>
+      <p id="join-error-message" class="muted"></p>
+      <div class="btn-row">
+        <a class="btn secondary" href="/">トップへ戻る</a>
+      </div>
+    </section>
+
+    <form id="screen-join" class="card hidden" autocomplete="off">
+      <h2>ルームに参加する</h2>
+      <p class="muted">ルームコード: <strong id="join-room-code"></strong></p>
+      <div class="field">
+        <label for="join-name-input">なまえ</label>
+        <input type="text" id="join-name-input" maxlength="20" required placeholder="例: はなこ" />
+      </div>
+      <div class="btn-row">
+        <button type="submit">参加する</button>
+      </div>
+    </form>
+
+    <section id="screen-lobby" class="hidden">
+      <div class="card room-code-banner">
+        <div>
+          <div class="muted">ルームコード</div>
+          <div class="code" id="lobby-room-code"></div>
+        </div>
+        <div class="btn-row" style="width: auto">
+          <button type="button" id="btn-copy-link" class="secondary">リンクをコピー</button>
+          <button type="button" id="btn-toggle-qr" class="secondary">QR表示</button>
+        </div>
+      </div>
+
+      <div id="qr-container" class="card hidden"></div>
+
+      <div class="card">
+        <h2>参加者</h2>
+        <ul id="player-list" class="player-list"></ul>
+        <div class="btn-row" style="margin-top: 14px">
+          <button type="button" id="btn-toggle-ready">準備完了にする</button>
+        </div>
+      </div>
+
+      <div id="host-controls" class="card hidden">
+        <h2>ホスト設定</h2>
+        <div class="field">
+          <label>桁数</label>
+          <div class="radio-group" id="settings-digits-group">
+            <label><input type="radio" name="settings-digits" value="3" /> 3桁</label>
+            <label><input type="radio" name="settings-digits" value="4" /> 4桁</label>
+            <label><input type="radio" name="settings-digits" value="5" /> 5桁</label>
+          </div>
+        </div>
+        <div class="field">
+          <div class="checkbox-row">
+            <label><input type="checkbox" id="settings-allow-duplicate" /> 数字の重複を許可する</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="settings-max-attempts">回数制限</label>
+          <input type="number" id="settings-max-attempts" min="1" max="50" />
+        </div>
+        <div class="field">
+          <label for="settings-time-limit">制限時間(秒、0=なし)</label>
+          <input type="number" id="settings-time-limit" min="0" max="3600" step="30" />
+        </div>
+        <div class="btn-row">
+          <button type="button" id="btn-save-settings" class="secondary">設定を保存</button>
+        </div>
+
+        <h2 style="margin-top: 18px">CPUを追加</h2>
+        <div class="btn-row">
+          <select id="cpu-difficulty">
+            <option value="easy">弱(ランダム)</option>
+            <option value="normal" selected>普通</option>
+            <option value="hard">強</option>
+          </select>
+          <button type="button" id="btn-add-cpu" class="secondary">追加</button>
+        </div>
+
+        <div class="btn-row" style="margin-top: 18px">
+          <button type="button" id="btn-start-game">対戦を開始する</button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-leave-room" class="danger">退出する</button>
+      </div>
+    </section>
+
+    <section id="screen-countdown" class="card hidden">
+      <p class="muted">まもなく開始します…</p>
+    </section>
+
+    <section id="screen-playing" class="hidden">
+      <div class="card">
+        <div class="status-bar">
+          <span>桁数: <strong id="play-digits"></strong></span>
+          <span id="play-attempts-left"></span>
+          <span id="play-time-left"></span>
+        </div>
+        <div class="digit-inputs" id="digit-inputs"></div>
+        <div class="btn-row">
+          <button type="button" id="btn-submit-guess">予想する</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>回答履歴</h2>
+        <div class="history-board" id="history-board"></div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" id="btn-leave-game" class="danger">退出する</button>
+      </div>
+    </section>
+
+    <section id="screen-result" class="hidden">
+      <div class="card">
+        <h2>結果発表</h2>
+        <p class="muted">正解</p>
+        <div class="secret-reveal" id="result-secret"></div>
+        <table class="ranking-table" id="result-ranking">
+          <thead>
+            <tr>
+              <th>順位</th>
+              <th>プレイヤー</th>
+              <th>回数</th>
+              <th>タイム</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="btn-row" style="margin-top: 16px">
+          <button type="button" id="btn-rematch" class="hidden">もう一度</button>
+          <a class="btn secondary" href="/">トップへ戻る</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="/js/vendor/qrcode-generator.js"></script>
+  <script type="module" src="/js/room.js"></script>
+</body>
+</html>
